@@ -1,10 +1,12 @@
 package edu.knoldus.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
+import akka.dispatch.{BoundedMessageQueueSemantics, RequiresMessageQueue}
 import edu.knoldus.models.{Biller, UserAccount}
 
 
-class UserAccountGenerator(dBRepoActor: ActorRef) extends Actor with ActorLogging {
+class UserAccountGenerator(dBRepoActor: ActorRef) extends Actor with ActorLogging
+  with RequiresMessageQueue[BoundedMessageQueueSemantics] {
 
   override def receive = {
 

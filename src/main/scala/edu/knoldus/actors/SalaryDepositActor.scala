@@ -2,7 +2,6 @@ package edu.knoldus.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import edu.knoldus.models.{Biller, Salary}
-import akka.pattern.ask
 import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.collection.mutable.ListBuffer
@@ -15,14 +14,14 @@ class SalaryDepositActor(dBRepoActor: ActorRef) extends Actor with ActorLogging 
 
     case salary: Salary =>
       log.info("SalaryDepositActor: Forwarding to DBRepoActor!")
-      dBRepoActor ? salary
+      dBRepoActor ! salary
 
-    case (billerList: ListBuffer[Biller], ref: ActorRef) =>
-      val actroRef: Option[ActorRef] = Some(ref)
-      println("SalaryActorRef: "+ref)
+    case billerList: ListBuffer[Biller] =>
+      val actroRef: Option[ActorRef] = Some(dBRepoActor)
+      println("SalaryActorRef: "+dBRepoActor)
       log.info("SalaryDepositActor: Forwarding to different child actors for billing")
       billerList.foreach {
-        biller => ref ! biller
+        biller => dBRepoActor ! biller
       }
   }
 
